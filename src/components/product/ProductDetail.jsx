@@ -29,7 +29,6 @@ export const ProductDetail = ({ product, onAddToCart, onBack }) => {
         <div className="product-detail-info">
           <h1 className="product-detail-name">{product.name}</h1>
           <p className="product-detail-price">{formatPrice(product.price)}</p>
-          <p className="product-detail-description">{product.description}</p>
           
           <div className="product-detail-stock">
             在庫: {product.stock > 0 ? `${product.stock}個` : '在庫切れ'}

@@ -14,7 +14,6 @@ export const ProductCard = memo(({ product, onAddToCart, onClick }) => {
       <div className="product-image">{product.image}</div>
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-description">{product.description}</p>
         <div className="product-footer">
           <span className="product-price">{formatPrice(product.price)}</span>
           <Button variant="primary" onClick={handleAddToCart}>
