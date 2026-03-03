@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { ProductGrid } from '../components/product/ProductGrid';
 import { Message } from '../components/common/Message';
-import { products } from '../data/products';
+import { api } from '../utils/api';
 import './ProductListPage.css';
 
 export const ProductListPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [message, setMessage] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getProducts()
+      .then(setProducts)
+      .catch(() => setMessage({ type: 'error', text: '商品の取得に失敗しました' }))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleAddToCart = (product) => {
     addToCart(product, 1);
@@ -22,6 +31,10 @@ export const ProductListPage = () => {
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: '2rem' }}>読み込み中...</div>;
+  }
 
   return (
     <div className="product-list-page">

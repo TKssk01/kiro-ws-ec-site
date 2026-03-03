@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { CheckoutForm } from '../components/checkout/CheckoutForm';
 import { OrderSummary } from '../components/checkout/OrderSummary';
-import { generateOrderNumber } from '../utils/formatters';
+import { api } from '../utils/api';
 import './CheckoutPage.css';
 
 export const CheckoutPage = () => {
@@ -14,25 +14,23 @@ export const CheckoutPage = () => {
     return null;
   }
 
-  const handleSubmit = async ({ shippingInfo, paymentInfo }) => {
-    // Simulate order processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const orderNumber = generateOrderNumber();
-    const orderDetails = {
-      orderNumber,
-      items: cart,
-      subtotal: cartTotal,
-      shippingFee: 0,
-      total: cartTotal,
-      shippingInfo,
-      paymentInfo,
-      orderDate: new Date(),
-      status: 'confirmed'
-    };
-
+  const handleSubmit = async ({ shippingInfo }) => {
+    const result = await api.createOrder(cart, shippingInfo);
     clearCart();
-    navigate(`/order-confirmation/${orderNumber}`, { state: { orderDetails } });
+    navigate(`/order-confirmation/${result.order_number}`, {
+      state: {
+        orderDetails: {
+          orderNumber: result.order_number,
+          items: cart,
+          subtotal: cartTotal,
+          shippingFee: 0,
+          total: cartTotal,
+          shippingInfo,
+          orderDate: new Date(),
+          status: result.status,
+        },
+      },
+    });
   };
 
   const handleCancel = () => {
